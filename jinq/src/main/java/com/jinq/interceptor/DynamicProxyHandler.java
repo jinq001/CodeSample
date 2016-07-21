@@ -1,8 +1,11 @@
 package com.jinq.interceptor;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+
+import com.jinq.interceptor.annotation.CouldDebugOut;
 
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.MethodInterceptor;
@@ -26,19 +29,32 @@ public class DynamicProxyHandler implements MethodInterceptor {
 			MethodProxy proxy) throws Throwable {
 		Object result = null;
 		// 调用之前
-		doBefore();
+		boolean showDebug=false;
+		for(Annotation anno:method.getAnnotations()){
+			if(anno.toString().indexOf("CouldDebugOut")>0){
+				showDebug=true;
+				 break;
+			}
+		}
+		doBefore(showDebug);
 		// 调用原始对象的方法
 		result = proxy.invokeSuper(obj, args);
 		// 调用之后
-		doAfter();
+		doAfter(showDebug);
 		return result;
 	}
 
-	private void doBefore() {
-		System.out.println("before method invoke");
+	private void doBefore(boolean show) {
+		if(show){
+			System.out.println("before method invoke");
+			
+		}
 	}
 
-	private void doAfter() {
+	private void doAfter(boolean show) {
+		if(show){
+			
 		System.out.println("after method invoke");
+		}
 	}
 }
