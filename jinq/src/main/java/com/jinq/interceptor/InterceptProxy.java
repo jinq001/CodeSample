@@ -16,7 +16,6 @@ public class InterceptProxy {
 			T hw=(T)cglibProxy.createProxy(cls);
 			return hw;
 			} catch (InstantiationException | IllegalAccessException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			return null;

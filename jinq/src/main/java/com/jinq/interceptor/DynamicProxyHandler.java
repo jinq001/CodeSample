@@ -30,13 +30,14 @@ public class DynamicProxyHandler implements MethodInterceptor {
 		Object result = null;
 		// 调用之前
 		boolean showDebug=false;
-		for(Annotation anno:method.getAnnotations()){
-			if(anno.toString().indexOf("CouldDebugOut")>0){
-				showDebug=true;
-				 break;
-			}
-		}
-		doBefore(showDebug);
+		showDebug=method.isAnnotationPresent(CouldDebugOut.class);
+//		for(Annotation anno:method.getAnnotations()){
+//			if(anno.toString().indexOf("CouldDebugOut")>0){
+//				showDebug=true;
+//				 break;
+//			}
+//		}
+		doBefore(showDebug,method,args);
 		// 调用原始对象的方法
 		result = proxy.invokeSuper(obj, args);
 		// 调用之后
@@ -44,17 +45,20 @@ public class DynamicProxyHandler implements MethodInterceptor {
 		return result;
 	}
 
-	private void doBefore(boolean show) {
+	private void doBefore(boolean show,Method method,Object[] args) {
 		if(show){
-			System.out.println("before method invoke");
-			
+			System.out.println("enter="+method.getDeclaringClass().getName()+"   "+method.getName());
+			for(Object o:args){
+				System.out.print("        param="+o.toString());
+			}
+			System.out.println();
 		}
 	}
 
 	private void doAfter(boolean show) {
 		if(show){
 			
-		System.out.println("after method invoke");
+//			System.out.println("after method invoke");
 		}
 	}
 }
