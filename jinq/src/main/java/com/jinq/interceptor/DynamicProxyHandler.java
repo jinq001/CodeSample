@@ -46,10 +46,13 @@ public class DynamicProxyHandler implements MethodInterceptor {
 	}
 
 	private void doBefore(boolean show,Method method,Object[] args) {
-		if(show){
-			System.out.println("enter="+method.getDeclaringClass().getName()+"   "+method.getName());
+		if(!show){
+			System.out.print("enter="+method.getDeclaringClass().getName()+"."+method.getName());
+			if(args.length>0){
+				System.out.print(" param=");
+			}
 			for(Object o:args){
-				System.out.print("        param="+o.toString());
+				System.out.print(" "+o.toString());
 			}
 			System.out.println();
 		}
