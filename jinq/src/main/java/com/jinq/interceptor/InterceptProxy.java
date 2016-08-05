@@ -1,13 +1,9 @@
 package com.jinq.interceptor;
 
 public class InterceptProxy {
-		public static  Object getProxyObj(Object o){
-			 
-			DynamicProxyHandler cglibProxy=new DynamicProxyHandler();
-			Object hw=cglibProxy.createProxy(o);
-			return  hw;
-		}
+	 
 		public static <T> T getRealObj(Class<T> o){
+			System.out.println("class="+Thread.currentThread() .getStackTrace()[2].getClassName()+" method==="+Thread.currentThread() .getStackTrace()[2].getMethodName());
 			T cls;
 			try {
 				cls = o.newInstance();
@@ -20,4 +16,31 @@ public class InterceptProxy {
 			}
 			return null;
 		}
+		public static void printClassMethod(int showParentlevel  ,Object... methodParam){
+			int stackSize=Thread.currentThread().getStackTrace().length;
+			StringBuffer sb=new StringBuffer();
+			System.out.println("*********************");
+			if(showParentlevel==-1){
+				showParentlevel=stackSize-3;
+			}
+			for(int i=showParentlevel;i>=0;i--){
+				if(i==0){
+					StackTraceElement ele=Thread.currentThread().getStackTrace()[2];
+					System.err.print(sb.toString()+ele);
+					for(Object o:methodParam){
+						System.err.print("  "+o);
+					}
+					System.err.println("\n");
+					return;
+				}
+				if(stackSize>showParentlevel+2){
+					StackTraceElement ele=Thread.currentThread().getStackTrace()[2+i];
+					System.out.println(sb.toString()+ele);
+//					System.out.println(sb.toString()+ele.getClassName()+"."+ele.getMethodName()+" [line:"+ele.getLineNumber()+"]");
+					sb.append("  ");
+				}
+			}
+			
+		}
+		
 }
